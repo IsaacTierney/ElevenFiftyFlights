@@ -15,10 +15,9 @@ public class PassengerIdService : IPassengerIdService
             FlightId = model.FlightId
 
         };
-    }
-    
-    public async Task<PassengerIdDetail?> GetPassengerIdByIdAsync(int passengerId);
+    }    
+    public async Task<PassengerIdDetail?> GetPassengerIdByIdAsync(int passengerId)
     {
-
+        
     }
 }
