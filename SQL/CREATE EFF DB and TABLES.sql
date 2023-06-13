@@ -25,7 +25,6 @@ CREATE TABLE Airports
     [City] NCHAR,
     [State] NVARCHAR,
     [Name] NVARCHAR,
-    [Destination] NVARCHAR,
 )
 GO
 -- Flights
