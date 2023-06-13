@@ -1,11 +1,15 @@
 using ElevenFiftyFlights.Data;
 using Microsoft.EntityFrameworkCore;
+using ElevenFiftyFlights.Services.PassengerId;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add connection string and DbContext setup
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+// Add Passenger Service/Interface for Dependency Injection here
+builder.Services.AddScoped<IPassengerIdService, PassengerIdService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
