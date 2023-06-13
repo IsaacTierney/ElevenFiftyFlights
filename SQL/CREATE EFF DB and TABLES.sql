@@ -1,6 +1,6 @@
 CREATE DATABASE ElevenFiftyFlights
 GO
-USING ElevenFiftyFlights DATABASE
+USE ElevenFiftyFlights
 -- Users - Isaac
 CREATE TABLE Users
 (
