@@ -1,4 +1,6 @@
 using ElevenFiftyFlights.Data;
+using ElevenFiftyFlights.Services.Airport;
+using ElevenFiftyFlights.Services.Flight;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add connection string and DbContext setup
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+// Add User Service/Interface for Dependency Injection here
+builder.Services.AddScoped<IAirportService, AirportService>();
+builder.Services.AddScoped<IFlightService, FlightService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
