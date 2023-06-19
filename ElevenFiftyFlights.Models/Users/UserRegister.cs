@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ElevenFiftyFlights.Models.Users;
+namespace ElevenFiftyFlights.Models.User;
 
-public class UsersRegister
+public class UserRegister
 {
     [Required]
     public int Id { get; set; }
