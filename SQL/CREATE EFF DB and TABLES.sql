@@ -24,8 +24,7 @@ CREATE TABLE Airports
     [Id] INT PRIMARY KEY IDENTITY (1,1),
     [City] NCHAR,
     [State] NVARCHAR,
-    [Name] NVARCHAR,
-    [Destination] NVARCHAR,
+    [Name] NVARCHAR
 )
 GO
 -- Flights
