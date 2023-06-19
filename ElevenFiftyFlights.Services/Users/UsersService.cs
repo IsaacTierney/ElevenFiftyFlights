@@ -8,6 +8,6 @@ public class UsersService : IUsersService
 {
     public async Task<bool> RegisterUsersAsync(UsersRegister model)
     {
-
+        return true;
     }
 }
