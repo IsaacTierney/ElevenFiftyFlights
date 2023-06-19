@@ -1,4 +1,4 @@
-using ElevenFiftyFlights.Models.Users;
+using ElevenFiftyFlights.Models.User;
 
 namespace ElevenFiftyFlights.Services.User;
 
