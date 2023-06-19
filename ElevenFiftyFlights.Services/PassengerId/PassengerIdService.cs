@@ -5,6 +5,8 @@ namespace ElevenFiftyFlights.Services.PassengerId;
 
 public class PassengerIdService : IPassengerIdService
 {
+
+    private readonly int _passengerId;
     public async Task<bool> BookingPassengerAsync(PassengerIdDetail model)
     {
         PassengerIdEntity entity = new()
@@ -14,10 +16,12 @@ public class PassengerIdService : IPassengerIdService
             ConfirmationNumber = model.ConfirmationNumber,
             FlightId = model.FlightId
 
-        };
+        }; return true;
     }    
-    public async Task<PassengerIdDetail?> GetPassengerIdByIdAsync(int passengerId)
-    {
-        
-    }
-}
+    //this part is under construction
+    //  public async Task<PassengerIdDetail?> GetPassengerIdByIdAsync(int passengerId)
+//     {
+//         _passengerId = passengerId;
+//          return(passengerId);
+//     }
+ }
