@@ -10,4 +10,6 @@ public class ApplicationDbContext : DbContext
 
 	public DbSet<AirportEntity> Airport { get; set; } = null!;
 	public DbSet<FlightEntity> Flight { get; set; } = null!;
+	public DbSet<PassengerIdEntity> PassengerId { get; set; } = null!;
+	public DbSet<UserIdEntity> UserId { get; set; } = null!;
 }

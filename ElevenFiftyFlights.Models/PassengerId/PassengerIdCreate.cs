@@ -5,9 +5,7 @@ namespace ElevenFiftyFlights.Models.PassengerId;
 
 public class PassengerIdCreate
 {
-    [Key]
-    public int Id { get; set; }
-    [Key]
+    public int PassengerId { get; set; }
     public int UserId { get; set; }
     public int ConfirmationNumber { get; set; }
     [ForeignKey("ElevenFiftyFlights(Flights)")]

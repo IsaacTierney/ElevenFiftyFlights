@@ -2,17 +2,16 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-
     "dotnet-aspnet-codegenerator": {
       "version": "7.0.6",
       "commands": [
         "dotnet-aspnet-codegenerator"
-
+      ]
+    },
     "dotnet-ef": {
       "version": "7.0.7",
       "commands": [
         "dotnet-ef"
-
       ]
     }
   }

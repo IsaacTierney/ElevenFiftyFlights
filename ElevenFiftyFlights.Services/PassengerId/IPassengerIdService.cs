@@ -5,6 +5,7 @@ namespace ElevenFiftyFlights.Services.PassengerId;
 public interface IPassengerIdService
 {
     
-    Task<bool> BookingPassengerAsync(PassengerIdDetail model);
-    // Task<PassengerIdDetail?> GetPassengerIdByIdAsync(int passengerId);
+    Task<PassengerIdCreate?> BookingPassengerById(PassengerIdCreate model);
+    Task<PassengerIdDetail> GetPassengerIdById(PassengerIdDetail model);
+    
 }
