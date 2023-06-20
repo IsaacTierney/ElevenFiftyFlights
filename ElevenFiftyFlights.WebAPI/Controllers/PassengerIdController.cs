@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ElevenFiftyFlights.Data;
 using ElevenFiftyFlights.Models;
 
+
 namespace ElevenFiftyFlights.WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -13,37 +14,57 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IPassengerIdService _passengerIdService;
-        private readonly UserId _userId;
         public PassengerIdController(IPassengerIdService passengerIdService)
         {
             _passengerIdService = passengerIdService;
         }
-
-        // GET api Passenger
-        [HttpGet]
-        public async Task<IActionResult> GetPassengerId([FromBody] PassengerIdDetail model)
+        // Create PassengerId
+        [HttpPost] //any parameter in these methods must be in the request from the consumer
+        public async Task<IActionResult?> BookingPassengerByUserIdAsync([FromForm] PassengerIdBooking model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var response = await _passengerIdService.GetPassengerIdById(model);
-            if (response is not null)
-                return Ok(response);
-
-            return BadRequest("Could not retrieve passengerId.");
+            var passengerDetail = await _passengerIdService.BookpassengerAsync(model);
+            //two options from our service either the response or null
+            if (passengerDetail == null) //this would be the issue
+            {
+                return BadRequest();
+            }
+            // inherit a ConfirmationNumber
+            return Ok(passengerDetail);
         }
-        [HttpPost]
-        public async Task<PassengerIdCreate?> BookingPassengerByPassengerIdAsync([FromBody] PassengerIdCreate model)
+        // GET single PassengerId by Id
+        [HttpGet("{PassengerId:int}")]
+        public async Task<IActionResult> GetPassengerId([FromRoute] int passengerId)
         {
-            var passengerEntity = await _userId.GetUserIdAsync(model);
+            var UserDetail = await _passengerIdService.GetPassengerDetailById(passengerId);
+            if (UserDetail is null)
+            {
+                return NotFound();
+            }
+            return Ok(UserDetail);
 
-            // variable with a response equal to a backing field in a service then invoke the method
-            // if fight exists and userId exists then
-            // create a passengerId and
-            var passengerIdEntity = new PassengerIdEntity();
-            var ConfirmationNumber = new ConfirmationNumberEntity();
-            // create a ConfirmationNumber
-           return (passengerEntity);
-    }
+        }
+        // Get all Flights by UserId
+        [HttpGet("{flightId:int}")]
+        public async Task<IActionResult> GetFlightById([FromRoute] int FlightEntity)
+        {
+            var flightId = await _flightId.GetFlightByIdAsync/*getting error code checked*/(FlightEntity);
+            if (flightId is null)
+            {
+                return NotFound();
+            }
+            return Ok(flightId);
+        }
+        // Delete Passenger
+        public async Task<IActionResult> GetPassengerById([FromForm] int PassengerId)
+        {
+            var validPassengerId = await _passengerIdService.GetPassengerIdAsync(PassengerId);
+            if (validPassengerId is null)
+            {
+                return NotFound();
+            }
+            return Ok(validPassengerId);
+        }
     }
 }
+
 
