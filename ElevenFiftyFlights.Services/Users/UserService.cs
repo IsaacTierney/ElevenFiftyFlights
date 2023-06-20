@@ -6,8 +6,27 @@ namespace ElevenFiftyFlights.Services.User;
 
 public class UserService : IUserService
 {
+    private readonly ApplicationDbContext _context;
+    public UserService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
     public async Task<bool> RegisterUserAsync(UserRegister model)
     {
-        return true;
+        UserEntity entity = new()
+        {
+            Id = model.Id,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            Email = model.Email,
+         PhoneNumber = model.PhoneNumber
+        };
+
+        _context.Users.Add(entity);
+        int numberOfChanges = await _context.SaveChangesAsync();
+
+        return numberOfChanges == 1;
     }
 }
+
+ 
