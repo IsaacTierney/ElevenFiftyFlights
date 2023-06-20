@@ -1,5 +1,6 @@
 using ElevenFiftyFlights.Services.User;
 using Microsoft.AspNetCore.Mvc;
+using ElevenFiftyFlights.Models.User;
 
 namespace ElevenFiftyFlights.WebAPI.Controllers
 {

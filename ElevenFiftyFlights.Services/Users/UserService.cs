@@ -1,6 +1,7 @@
 using ElevenFiftyFlights.Models.User;
 using ElevenFiftyFlights.Data.Entities;
 using ElevenFiftyFlights.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElevenFiftyFlights.Services.User;
 
@@ -19,7 +20,7 @@ public class UserService : IUserService
             FirstName = model.FirstName,
             LastName = model.LastName,
             Email = model.Email,
-         PhoneNumber = model.PhoneNumber
+            PhoneNumber = model.PhoneNumber
         };
 
         _context.Users.Add(entity);
