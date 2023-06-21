@@ -4,6 +4,8 @@ using ElevenFiftyFlights.Services.Airport;
 using ElevenFiftyFlights.Services.Flight;
 using Microsoft.EntityFrameworkCore;
 using ElevenFiftyFlights.Services.PassengerId;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,10 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//IHttpContextAccessor package
+builder.Services.AddHttpContextAccessor();
+builder.Services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 var app = builder.Build();
 

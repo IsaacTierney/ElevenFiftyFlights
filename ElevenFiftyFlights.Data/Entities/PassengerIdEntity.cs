@@ -7,11 +7,15 @@ public class PassengerIdEntity
 
 {
     [Key]
-    public int Id { get; set; }
+    public int PassengerId { get; set; }
     [Required]
     public int UserId { get; set; }
+    [Required]
     public int ConfirmationNumber { get; set; }
     [ForeignKey("ElevenFiftyFlights.Flights(Id)")]
     public int FlightId { get; set; }
+    //stretch goal of bookingDate
+    //[Required]
+    //public DateTime BookingDate { get; set; }
 
 }
