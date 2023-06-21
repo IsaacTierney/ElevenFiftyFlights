@@ -14,6 +14,9 @@ public class FlightService : IFlightService
 
 	public async Task<bool> RegisterFlightAsync(FlightRegister model)
 	{
+		if (await GetFlightByAirlineIdAsync(model.AirlineId) != null || await GetFlightByOriginIdAsync(model.OriginId) != null)
+			return false;
+
 		FlightEntity entity = new()
 		{
 			AirlineId = model.AirlineId,
@@ -28,5 +31,15 @@ public class FlightService : IFlightService
 		int numberOfChanges = await _context.SaveChangesAsync();
 
 		return numberOfChanges == 1;
+	}
+
+	private async Task<FlightEntity> GetFlightByAirlineIdAsync(int airlineId)
+	{
+		return await _context.Flight.FirstOrDefaultAsync(flight => flight.AirlineId == airlineId);
+	}
+
+	private async Task<FlightEntity> GetFlightByOriginIdAsync(int originId)
+	{
+		return await _context.Flight.FirstOrDefaultAsync(flight => flight.OriginId == originId.ToLower);
 	}
 }

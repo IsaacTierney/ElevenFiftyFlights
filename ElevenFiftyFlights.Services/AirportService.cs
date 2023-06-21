@@ -14,6 +14,9 @@ public class AirportService : IAirportService
 
 	public async Task<bool> RegisterAirportAsync(AirportRegister model)
 	{
+		if (await GetAirportByCodeAsync(model.Code) != null || await GetAirportByNameAsync(model.Name) != null)
+			return false;
+
 		AirportEntity entity = new()
 		{
 			Country = model.Country,
@@ -27,5 +30,15 @@ public class AirportService : IAirportService
 		int numberOfChanges = await _context.SaveChangesAsync();
 
 		return numberOfChanges == 1;
+	}
+
+	private async Task<AirportEntity> GetAirportByCodeAsync(string? code)
+	{
+		return await _context.Airport.FirstOrDefaultAsync(airport => airport.Code.ToLower() == code?.ToLower());
+	}
+
+	private async Task<AirportEntity> GetAirportByNameAsync(string? name)
+	{
+		return await _context.Airport.FirstOrDefaultAsync(airport => airport.Name.ToLower() == name?.ToLower());
 	}
 }
