@@ -12,6 +12,7 @@ public class UserService : IUserService
     {
         _context = context;
     }
+
     public async Task<bool> RegisterUserAsync(UserRegister model)
     {
         UserEntity entity = new()
@@ -27,6 +28,15 @@ public class UserService : IUserService
         int numberOfChanges = await _context.SaveChangesAsync();
 
         return numberOfChanges == 1;
+    }
+
+    private async Task <UserEntity?> GetUserByIdAsync(int Id)
+    {
+        return await _context.Users.FirstOrDefaultAsync(user => user.Id);
+    }
+    private async Task <UserEntity?> GetUserByLastName(string LastName)
+    {
+        return await _context.Users.FirstOrDefaultAsync(user => user.LastName.ToLower() == LastName.ToLower());
     }
 }
 
