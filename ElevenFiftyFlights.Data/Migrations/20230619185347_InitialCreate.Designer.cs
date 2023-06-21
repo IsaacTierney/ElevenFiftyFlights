@@ -12,7 +12,7 @@ namespace ElevenFiftyFlights.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230619185347_InitialCreate")]
-    partial class InitialCreate
+    partial class SecondaryInitCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
