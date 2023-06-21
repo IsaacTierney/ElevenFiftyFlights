@@ -1,8 +1,11 @@
 using ElevenFiftyFlights.Data;
+using ElevenFiftyFlights.Services.User;
 using ElevenFiftyFlights.Services.Airport;
 using ElevenFiftyFlights.Services.Flight;
 using Microsoft.EntityFrameworkCore;
 using ElevenFiftyFlights.Services.PassengerId;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +20,13 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//IHttpContextAccessor package
+builder.Services.AddHttpContextAccessor();
+builder.Services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 var app = builder.Build();
 
