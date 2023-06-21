@@ -1,10 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+namespace ElevenFiftyFlights.Models.Airport;
 
-namespace ElevenFiftyFlights.Data.Entities;
-
-public class AirportEntity
+public class AirportRegister
 {
-	[Key]
 	public int Id { get; set; }
 
 	public string? Country { get; set; }
@@ -16,6 +13,4 @@ public class AirportEntity
 	public string? Name { get; set; }
 
 	public string? Code { get; set; }
-
-
 }
