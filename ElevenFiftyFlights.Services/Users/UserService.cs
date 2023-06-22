@@ -39,6 +39,11 @@ public class UserService : IUserService
     {
         throw new NotImplementedException();
     }
+
+    public Task<UserIdEntity> GetUserIdAsync(int UserId)
+    {
+        throw new NotImplementedException();
+    }
 } 
 
  

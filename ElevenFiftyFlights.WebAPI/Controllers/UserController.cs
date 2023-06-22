@@ -32,6 +32,21 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
             return BadRequest("Could not register.");
         }
 
+        
+        [Authorize]
+         [HttpGet("{UserId:int}")]
+        public async Task<IActionResult> GetUserId([FromRoute] int UserId)
+        {
+            var userIdDetail = await _userService.GetUserIdAsync(UserId);
+
+            if (userIdDetail is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userIdDetail);
+        }
+
          [HttpDelete("{UserId:int}")]
         public async Task<IActionResult> DeleteUserId([FromRoute] int UserId)
         {
