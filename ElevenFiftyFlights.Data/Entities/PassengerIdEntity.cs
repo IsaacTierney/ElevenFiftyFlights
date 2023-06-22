@@ -11,7 +11,7 @@ public class PassengerIdEntity
     [Required]
     public int UserId { get; set; }
     [Required]
-    public int ConfirmationNumber { get; set; }
+    public string CFCode { get; set; } = string.Empty;
     [ForeignKey("ElevenFiftyFlights.Flights(Id)")]
     public int FlightId { get; set; }
     //stretch goal of bookingDate
