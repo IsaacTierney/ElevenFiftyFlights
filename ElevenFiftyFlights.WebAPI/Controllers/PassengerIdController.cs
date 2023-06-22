@@ -13,8 +13,8 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
     public class PassengerIdController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IPassengerIdService _passengerIdService;
-        public PassengerIdController(IPassengerIdService passengerIdService)
+        private readonly PassengerIdService _passengerIdService;
+        public PassengerIdController(PassengerIdService passengerIdService)
         {
             _passengerIdService = passengerIdService;
         }
@@ -57,6 +57,7 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
         }
 
         [Authorize]
+        [HttpPut]
         //Put/ update
         // this requires tokens or claims to run properly
         public async Task<IActionResult> UpdatePassenger(PassengerIdBooking model)
@@ -67,21 +68,6 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
             var response = await _passengerIdService.UpdatePassengerAsync(model, Id);
             return Ok(response);
         }
-        // 
-
-        // // Delete Passenger
-        // public async Task<IActionResult> DeletePassengerById([FromRoute] int passengerId)
-        // {
-        //     // if valid passengerId then delete
-        //     //update the db
-        //     // return 1
-        //     var validPassengerId = await _passengerIdService.GetPassengerIdAsync(PassengerId);
-        //     if (validPassengerId is null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     return Ok(validPassengerId);
-        // }
 
         // DELETE api/PassengerId/5
         [HttpDelete("{passengerId:int}")]
