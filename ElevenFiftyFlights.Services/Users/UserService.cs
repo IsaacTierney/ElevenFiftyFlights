@@ -30,14 +30,12 @@ public class UserService : IUserService
         return numberOfChanges == 1;
     }
 
-    private async Task <UserEntity?> GetUserByIdAsync(int Id)
+    public async Task <UserEntity?> GetUserIdByLastNameAsync(string LastName)
     {
-        return await _context.Users.FirstOrDefaultAsync(user => user.Id);
+        return await _context.Users.FirstOrDefaultAsync(user => user.LastName == LastName);
     }
-    private async Task <UserEntity?> GetUserByLastName(string LastName)
-    {
-        return await _context.Users.FirstOrDefaultAsync(user => user.LastName.ToLower() == LastName.ToLower());
-    }
-}
+    
+    
+} 
 
  
