@@ -1,10 +1,10 @@
 using ElevenFiftyFlights.Models.PassengerId;
 using ElevenFiftyFlights.Services.PassengerId;
-using ElevenFiftyFlights.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ElevenFiftyFlights.Data;
 using ElevenFiftyFlights.Models;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElevenFiftyFlights.WebAPI.Controllers
 {
@@ -13,8 +13,8 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
     public class PassengerIdController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IPassengerIdService _passengerIdService;
-        public PassengerIdController(IPassengerIdService passengerIdService)
+        private readonly PassengerIdService _passengerIdService;
+        public PassengerIdController(PassengerIdService passengerIdService)
         {
             _passengerIdService = passengerIdService;
         }
@@ -22,7 +22,7 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
         [HttpPost] //any parameter in these methods must be in the request from the consumer
         public async Task<IActionResult?> BookingPassengerByUserIdAsync([FromForm] PassengerIdBooking model)
         {
-            var passengerDetail = await _passengerIdService.BookpassengerAsync(model);
+            var passengerDetail = await _passengerIdService.BookPassengerAsync(model);
             //two options from our service either the response or null
             if (passengerDetail == null) //this would be the issue
             {
@@ -44,27 +44,39 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
 
         }
         // Get all Flights by UserId
-        [HttpGet("{flightId:int}")]
-        public async Task<IActionResult> GetFlightById([FromRoute] int FlightEntity)
+        [HttpGet("flightId/{userId:int}")]
+        public async Task<IActionResult> GetAllFlightsById([FromRoute] int userId)
         {
-            var flightId = await _flightId.GetFlightByIdAsync/*getting error code checked*/(FlightEntity);
-            if (flightId is null)
+            var getAllFlights = await _passengerIdService.GetAllFlightsAsync(userId);
+            if (getAllFlights is null)
             {
-                return NotFound();
+                //if not then send a console writeline with a notFound
+                return NotFound("List not found.");
             }
-            return Ok(flightId);
+            return Ok(getAllFlights);
         }
-        // Delete Passenger
-        public async Task<IActionResult> GetPassengerById([FromForm] int PassengerId)
+
+        [Authorize]
+        [HttpPut]
+        //Put/ update
+        // this requires tokens or claims to run properly
+        public async Task<IActionResult> UpdatePassenger(PassengerIdBooking model)
         {
-            var validPassengerId = await _passengerIdService.GetPassengerIdAsync(PassengerId);
-            if (validPassengerId is null)
-            {
-                return NotFound();
-            }
-            return Ok(validPassengerId);
+            var user = User.Identity as ClaimsIdentity; //get user claim object from built-in UserId
+            var UserId = user?.FindFirst("Id"); // gettting the id claim
+            var Id = int.Parse(UserId?.Value ?? "0"); //string turns into int through parsing
+            var response = await _passengerIdService.UpdatePassengerAsync(model, Id);
+            return Ok(response);
+        }
+
+        // DELETE api/PassengerId/5
+        [HttpDelete("{passengerId:int}")]
+        public async Task<IActionResult> DeletePassengerByIdAsync([FromRoute] int passengerId)
+        {
+            return await _passengerIdService.DeletePassengerByIdAsync(passengerId)
+                ? Ok($"PassengerId {passengerId} was deleted successfully.")
+                : BadRequest($"PassengerId {passengerId} could not be deleted.");
         }
     }
 }
-
 
