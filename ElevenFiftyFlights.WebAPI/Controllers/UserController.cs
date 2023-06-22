@@ -29,7 +29,15 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
                 return Ok("User was registered.");
             }
        
-            return BadRequest("Could not registere.");
+            return BadRequest("Could not register.");
+        }
+
+         [HttpDelete("{UserId:int}")]
+        public async Task<IActionResult> DeleteUserId([FromRoute] int UserId)
+        {
+            return await _userService.DeleteUserIdAsync(UserId)
+                ? Ok($"User {UserId} was deleted successfully.")
+                : BadRequest($"User {UserId} could not be deleted.");
         }
     }
 }

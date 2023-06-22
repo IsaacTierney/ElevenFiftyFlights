@@ -34,8 +34,11 @@ public class UserService : IUserService
     {
         return await _context.Users.FirstOrDefaultAsync(user => user.LastName == LastName);
     }
-    
-    
+
+    public async Task<bool> DeleteUserIdAsync(int UserId)
+    {
+        throw new NotImplementedException();
+    }
 } 
 
  
