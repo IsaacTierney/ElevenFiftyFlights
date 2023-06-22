@@ -14,7 +14,7 @@ public class UserEntity
     public string? LastName { get; set; }
 
     [Required]
-    public string? Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     [Required]
     public int PhoneNumber { get; set; }
