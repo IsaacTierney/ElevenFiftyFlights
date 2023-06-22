@@ -24,7 +24,7 @@ CREATE TABLE Airports
     [Id] INT PRIMARY KEY IDENTITY (1,1),
     [City] NCHAR,
     [State] NVARCHAR,
-    [Name] NVARCHAR
+    [Name] NVARCHAR,
 )
 GO
 -- Flights
@@ -45,6 +45,6 @@ CREATE TABLE PassengerId
     [Id] INT PRIMARY KEY IDENTITY (1,1),
     [UserId] INT FOREIGN KEY (UserId) REFERENCES Users(Id),
     [ConfirmationNumber] INT,
-    [FlightId] NVARCHAR FOREIGN KEY (UserId) REFERENCES Flights(Id),
+    [FlightId] INT FOREIGN KEY (FlightId) REFERENCES Flights(Id),
 )
 GO
