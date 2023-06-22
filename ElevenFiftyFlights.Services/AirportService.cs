@@ -1,6 +1,7 @@
 using ElevenFiftyFlights.Data;
 using ElevenFiftyFlights.Data.Entities;
 using ElevenFiftyFlights.Models.Airport;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElevenFiftyFlights.Services.Airport;
 
@@ -14,14 +15,14 @@ public class AirportService : IAirportService
 
 	public async Task<bool> RegisterAirportAsync(AirportRegister model)
 	{
-		if (await GetAirportByCodeAsync(model.Code) != null || await GetAirportByNameAsync(model.Name) != null)
-			return false;
+		// if (await GetAirportByCodeAsync(model.Code) != null || await GetAirportByNameAsync(model.Name) != null)
+		// 	return false;
 
 		AirportEntity entity = new()
 		{
 			Country = model.Country,
-			City = model.City,
 			State = model.State,
+			City = model.City,
 			Name = model.Name,
 			Code = model.Code
 		};
@@ -32,13 +33,13 @@ public class AirportService : IAirportService
 		return numberOfChanges == 1;
 	}
 
-	private async Task<AirportEntity> GetAirportByCodeAsync(string? code)
-	{
-		return await _context.Airport.FirstOrDefaultAsync(airport => airport.Code.ToLower() == code?.ToLower());
-	}
+	// private async Task<AirportEntity> GetAirportByCodeAsync(string? code)
+	// {
+	// 	return await _context.Airport.FirstOrDefaultAsync(airport => airport.Code.ToLower() == code.ToLower());
+	// }
 
-	private async Task<AirportEntity> GetAirportByNameAsync(string? name)
-	{
-		return await _context.Airport.FirstOrDefaultAsync(airport => airport.Name.ToLower() == name?.ToLower());
-	}
+	// private async Task<AirportEntity> GetAirportByNameAsync(string? name)
+	// {
+	// 	return await _context.Airport.FirstOrDefaultAsync(airport => airport.Name.ToLower() == name.ToLower());
+	// }
 }
