@@ -1,12 +1,10 @@
 using ElevenFiftyFlights.Data;
 using ElevenFiftyFlights.Data.Entities;
 using ElevenFiftyFlights.Models.PassengerId;
-using ElevenFiftyFlights.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using ElevenFiftyFlights.Services;
 
 namespace ElevenFiftyFlights.Services.PassengerId;
+
 
 public class PassengerIdService : IPassengerIdService
 {
@@ -15,49 +13,27 @@ public class PassengerIdService : IPassengerIdService
     private readonly int _flightId;
     private readonly ApplicationDbContext _dbContext;
     private readonly PassengerIdBooking _passengerIdResponse;
+    
     // constructor
-    private readonly ApplicationDbContext _context;
-    public PassengerIdService(ApplicationDbContext context, PassengerIdBooking booking)
+    public PassengerIdService(ApplicationDbContext dbContext/*, PassengerIdBooking booking*/)
     {
-        _context = context;
-        _passengerIdResponse = booking;
+        _dbContext = dbContext;
+        // _passengerIdResponse = booking;
     }
-    // public PassengerBookingService(IHttpContextAccessor httpContextAccessor, ApplicationDbContext dbContext)
-    // {
-    //     // place variables for connection service here
-    // }
-    // public PassengerIdService(IHttpContextAccessor httpContextAccessor, ApplicationDbContext dbContext)
-    // {
-    //     var userClaims = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-    //     _dbContext = dbContext;
-    //     async Task<PassengerIdCreate?> BookPassengerByIdAsync(PassengerIdCreate model) //or request?
-    //     {
-    //         // var value = userClaims?.FindFirst("Id")?.Value;
-    // var validId = int.TryParse(value, out _userId);
-    // var flightId = int.TryParse(value, out _flightId);
-    // // Check if user with given user Id exists
-    // if (!validId)
-    //   {  throw new Exception("Attempted to book a flight without a valid User Id.");
-    //    } else if (!Flights)
-    // {throw new Exception("Attempted to book a flight without a valid Flight Id.");
-    // } else if (BookingPassengerByPassengerIdAsync());
 
-
-    // Check if flight with flight id exists
-    // if either is null then return null
-    // otherwise proceed with rest of the method
-    // flightId?.validId?.(method)
     // type one
-    public async Task<PassengerIdDetail?> BookPassengerAsync(PassengerIdBooking model) //we can trust this because of the controller
+    public async Task<PassengerIdEntity?> BookPassengerAsync(PassengerIdBooking model) //we can trust this because of the controller
     {       // type two
         PassengerIdEntity passengerIdEntity = new()
         {
             //object inialization syntax  different than using a constructor
             //type two  = type one
             UserId = model.UserId,
-            FlightId = model.FlightId,
-            ConfirmationNumber = GetConfirmationCode()
+            FlightId = model.FlightId
         };
+
+        passengerIdEntity.CFCode = (await GenerateConfirmationCodeAsnyc(passengerIdEntity)).ToString();
+
         // accessing.   locationWrite.  add information
         // database.    table.          add(Row)
         _dbContext.PassengerId.Add(passengerIdEntity);
@@ -66,10 +42,10 @@ public class PassengerIdService : IPassengerIdService
 
         if (numberOfChanges == 1)
         {
-            PassengerIdDetail response = new() //this is a retrun that is why it is Detail
+            PassengerIdEntity response = new() //this is a retrun that is why it is Detail
             {
                 PassengerId = passengerIdEntity.PassengerId,
-                ConfirmationNumber = passengerIdEntity.ConfirmationNumber,
+                CFCode = passengerIdEntity.CFCode,
                 UserId = model.UserId, //model is info from the user
                 FlightId = model.FlightId,
             };
@@ -79,9 +55,23 @@ public class PassengerIdService : IPassengerIdService
         return (null);
     }
 
-    public async Task<PassengerIdDetail> GetPassengerDetailById(int Id)
-    { //add logic here similar to getnote by id
-        throw new NotImplementedException();
+    public async Task<PassengerIdEntity> GetPassengerDetailById(int Id)
+    {
+        //Find the first IdDetail that has the given Id
+        // and an Id that matched the requesting _userId
+        var passengerEntity = await _dbContext.PassengerId
+        .FirstOrDefaultAsync(e =>
+        e.PassengerId == Id && e.UserId == _userId
+        );
+        // If noteEntity is null then return null
+        // Otherwise initialize and reutrn a new NoteDetail
+        return passengerEntity is null ? null : new PassengerIdEntity
+        {
+            PassengerId = passengerEntity.PassengerId,
+            UserId = passengerEntity.UserId,
+            CFCode = passengerEntity.CFCode,
+            FlightId = passengerEntity.FlightId,
+        };
     }
 
     public async Task<PassengerIdResponse?> GetPassengerIdAsync(PassengerIdResponse model)
@@ -96,7 +86,7 @@ public class PassengerIdService : IPassengerIdService
         // take in the user Id
         .Where(entity => entity.UserId == _userId)
         //this new instance has to match the return type
-        .Select(entity => new PassengerFlightListItem 
+        .Select(entity => new PassengerFlightListItem
         {
             FlightId = entity.FlightId
         })
@@ -113,7 +103,7 @@ public class PassengerIdService : IPassengerIdService
         var passengerUpdate = await _dbContext.PassengerId.FindAsync(request.UserId);
 
         //use null conditional operator to check if owned by the user
-        if (passengerUpdate?.UserId != userId)
+        if (passengerUpdate?.UserId != _userId)
             return false;
 
         /* update the entity's properties */
@@ -126,9 +116,23 @@ public class PassengerIdService : IPassengerIdService
         return numberOfChanges == 1;
     }
 
-    int GetConfirmationCode()
+    public async Task<ConfirmationCode> GenerateConfirmationCodeAsnyc(PassengerIdEntity passId)
     {
-        return -1;
+        var confcode = new ConfirmationCode();
+
+        // if valid passengerId
+        if (passId != null)
+        {
+            passId.CFCode = confcode.CFCode;
+            var numberOfChanges = await _dbContext.SaveChangesAsync();
+            return confcode; //local variable
+        }
+        else
+        {
+            // return numberOfChanges == 1;
+
+            throw new Exception("The inputted PassengerId in not valid");
+        }
     }
     // Method with 
     // variable with a response equal to a backing field in a service then invoke the method
@@ -144,8 +148,8 @@ public class PassengerIdService : IPassengerIdService
             return false;
         //update the db
         _dbContext.PassengerId.Remove(validPassengerId);
-                return await _dbContext.SaveChangesAsync() == 1;
+        return await _dbContext.SaveChangesAsync() == 1;
         // return 1
     }
-   
+
 }
