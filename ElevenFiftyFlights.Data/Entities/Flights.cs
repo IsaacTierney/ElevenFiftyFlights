@@ -21,5 +21,5 @@ public class FlightEntity
 
 	public float TicketPrice { get; set; }
 
-	public string Gate { get; set; } = string.Empty;
+	public string? Gate { get; set; } = string.Empty;
 }
