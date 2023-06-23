@@ -36,7 +36,7 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
         [ProducesResponseType(typeof(IEnumerable<AirlinesListItem>), 200)]
         public async Task<IActionResult> GetAllAirlines()
         {
-            var airlines = await _airlinesService.GetAirlinesByIdAsync(airlines);
+            var airlines = await _airlinesService.GetAllAirlinesAsync();
             return Ok(airlines);
         }
 
