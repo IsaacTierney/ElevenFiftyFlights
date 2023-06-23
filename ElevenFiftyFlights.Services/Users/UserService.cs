@@ -46,12 +46,12 @@ public class UserService : IUserService
         _context.UserId.Remove(validUserId);
                 return await _context.SaveChangesAsync() == 1;
     }
-    public async Task<UserIdEntity> GetUserIdAsync(int UserId)
-    {
-        return await _context.UserId.FirstOrDefaultAsync(user.UserId);
-        return await _context.Users.FirstOrDefaultAsync(user => user.userId == UserId);
+    //public async Task<UserIdEntity> GetUserIdAsync(int UserId)
+    //{
+      //  return await _context.UserId.FirstOrDefaultAsync(user.UserId);
+        // return await _context.Users.FirstOrDefaultAsync(user => user.userId == UserId);
         // SAVE FOR JOSH
-    }
+   // }
 } 
 
  
