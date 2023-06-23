@@ -12,7 +12,7 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
     [ApiController]
     public class PassengerIdController : ControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext? _dbContext;
         private readonly PassengerIdService _passengerIdService;
         public PassengerIdController(PassengerIdService passengerIdService)
         {

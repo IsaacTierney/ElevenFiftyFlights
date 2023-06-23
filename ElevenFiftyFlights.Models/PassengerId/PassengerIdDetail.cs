@@ -7,6 +7,7 @@ public class PassengerIdDetail
 {
     public int PassengerId { get; set; }
     public int UserId { get; set; }
+    [ForeignKey("ConfirmationCode")]
     public string CFCode { get; set; } = string.Empty;
     public int FlightId { get; set; }
 }

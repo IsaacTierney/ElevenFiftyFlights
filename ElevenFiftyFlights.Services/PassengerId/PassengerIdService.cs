@@ -10,10 +10,8 @@ public class PassengerIdService : IPassengerIdService
 {
 
     private readonly int _userId;
-    private readonly int _flightId;
     private readonly ApplicationDbContext _dbContext;
-    private readonly PassengerIdBooking _passengerIdResponse;
-    
+
     // constructor
     public PassengerIdService(ApplicationDbContext dbContext/*, PassengerIdBooking booking*/)
     {
@@ -22,7 +20,7 @@ public class PassengerIdService : IPassengerIdService
     }
 
     // type one
-    public async Task<PassengerIdEntity?> BookPassengerAsync(PassengerIdBooking model) //we can trust this because of the controller
+    public async Task<PassengerIdDetail?> BookPassengerAsync(PassengerIdBooking model) //we can trust this because of the controller
     {       // type two
         PassengerIdEntity passengerIdEntity = new()
         {
@@ -32,7 +30,7 @@ public class PassengerIdService : IPassengerIdService
             FlightId = model.FlightId
         };
 
-        passengerIdEntity.CFCode = (await GenerateConfirmationCodeAsnyc(passengerIdEntity)).ToString();
+        passengerIdEntity.CFCode = (GenerateConfirmationCode(passengerIdEntity)).ToString();
 
         // accessing.   locationWrite.  add information
         // database.    table.          add(Row)
@@ -42,7 +40,7 @@ public class PassengerIdService : IPassengerIdService
 
         if (numberOfChanges == 1)
         {
-            PassengerIdEntity response = new() //this is a retrun that is why it is Detail
+            PassengerIdDetail response = new() //this is a retrun that is why it is Detail
             {
                 PassengerId = passengerIdEntity.PassengerId,
                 CFCode = passengerIdEntity.CFCode,
@@ -55,7 +53,7 @@ public class PassengerIdService : IPassengerIdService
         return (null);
     }
 
-    public async Task<PassengerIdEntity> GetPassengerDetailById(int Id)
+    public async Task<PassengerIdDetail?> GetPassengerDetailById(int Id)
     {
         //Find the first IdDetail that has the given Id
         // and an Id that matched the requesting _userId
@@ -65,18 +63,13 @@ public class PassengerIdService : IPassengerIdService
         );
         // If noteEntity is null then return null
         // Otherwise initialize and reutrn a new NoteDetail
-        return passengerEntity is null ? null : new PassengerIdEntity
+        return passengerEntity is null ? null : new PassengerIdDetail
         {
             PassengerId = passengerEntity.PassengerId,
             UserId = passengerEntity.UserId,
             CFCode = passengerEntity.CFCode,
             FlightId = passengerEntity.FlightId,
         };
-    }
-
-    public async Task<PassengerIdResponse?> GetPassengerIdAsync(PassengerIdResponse model)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<PassengerFlightListItem>> GetAllFlightsAsync(int Id)
@@ -116,23 +109,20 @@ public class PassengerIdService : IPassengerIdService
         return numberOfChanges == 1;
     }
 
-    public async Task<ConfirmationCode> GenerateConfirmationCodeAsnyc(PassengerIdEntity passId)
+//helper method stays local
+    private string GenerateConfirmationCode(PassengerIdEntity passId)
     {
-        var confcode = new ConfirmationCode();
-
-        // if valid passengerId
-        if (passId != null)
+        Random random = new();
+        string code = "";
+        string letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        char[] arr = letters.ToCharArray();
+        //Given 7 random
+        for (int i = 0; i < 7; i++)
         {
-            passId.CFCode = confcode.CFCode;
-            var numberOfChanges = await _dbContext.SaveChangesAsync();
-            return confcode; //local variable
+            int Number = random.Next(0, 52);
+            code += arr[Number];
         }
-        else
-        {
-            // return numberOfChanges == 1;
-
-            throw new Exception("The inputted PassengerId in not valid");
-        }
+        return code;
     }
     // Method with 
     // variable with a response equal to a backing field in a service then invoke the method
