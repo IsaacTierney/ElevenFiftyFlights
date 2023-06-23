@@ -2,6 +2,8 @@ using ElevenFiftyFlights.Services.User;
 using Microsoft.AspNetCore.Mvc;
 using ElevenFiftyFlights.Models.User;
 using Microsoft.AspNetCore.Authorization;
+using ElevenFiftyFlights.Models.Token;
+using ElevenFiftyFlights.Services.Token;
 
 namespace ElevenFiftyFlights.WebAPI.Controllers
 {
@@ -10,9 +12,11 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly ITokenService _tokenService;
+        public UserController(IUserService userService, ITokenService tokenService)
         {
             _userService = userService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("Register")]
@@ -29,7 +33,43 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
                 return Ok("User was registered.");
             }
        
-            return BadRequest("Could not registere.");
+            return BadRequest("Could not register.");
         }
+
+        [HttpPost("~/api/Token")]
+        public async Task<IActionResult> GetToken([FromBody] TokenRequest request)
+        {
+            if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+            var tokenResponse = await _tokenService.GetTokenAsync(request);
+            if (tokenResponse is null)
+                return BadRequest("Invalid username or password");
+            
+            return Ok(tokenResponse);
+        }
+
+        [Authorize]
+         [HttpGet("{UserId:int}")]
+        public async Task<IActionResult> GetUserId([FromRoute] int UserId)
+        {
+            var userIdDetail = await _userService.GetUserIdAsync(UserId);
+
+            if (userIdDetail is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userIdDetail);
+        }
+
+         [HttpDelete("{UserId:int}")]
+        public async Task<IActionResult> DeleteUserId([FromRoute] int UserId)
+        {
+            return await _userService.DeleteUserIdAsync(UserId)
+                ? Ok($"User {UserId} was deleted successfully.")
+                : BadRequest($"User {UserId} could not be deleted.");
+        }
+
     }
 }
