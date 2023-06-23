@@ -1,10 +1,7 @@
 using ElevenFiftyFlights.Data;
 using ElevenFiftyFlights.Data.Entities;
 using ElevenFiftyFlights.Models.PassengerId;
-using ElevenFiftyFlights.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using ElevenFiftyFlights.Services;
 
 namespace ElevenFiftyFlights.Services.PassengerId;
 

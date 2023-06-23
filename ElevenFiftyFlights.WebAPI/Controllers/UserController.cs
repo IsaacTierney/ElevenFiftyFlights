@@ -20,7 +20,7 @@ namespace ElevenFiftyFlights.WebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState); //this could be causing errors
             }
 
             var registerResult = await _userService.RegisterUserAsync(model);

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElevenFiftyFlights.Services;
 
+[PrimaryKey("PassengerId, ConfirmationCode")]
 public class ConfirmationCode
 {
     public string CFCode { get; } = string.Empty;
