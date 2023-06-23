@@ -1,0 +1,8 @@
+SELECT TOP (1000) [Id]
+      ,[Email]
+      ,[Username]
+      ,[Password]
+      ,[FirstName]
+      ,[LastName]
+      ,[DateCreated]
+  FROM [ElevenNote].[dbo].[Users]

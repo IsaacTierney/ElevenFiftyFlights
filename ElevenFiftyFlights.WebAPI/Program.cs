@@ -4,6 +4,7 @@ using ElevenFiftyFlights.Services.Airport;
 using ElevenFiftyFlights.Services.Flight;
 using ElevenFiftyFlights.Services.Token;
 using Microsoft.EntityFrameworkCore;
+using ElevenFiftyFlights.Services.AirlineService;
 using ElevenFiftyFlights.Services.PassengerId;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -29,6 +30,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IAirlinesService, AirlinesService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
