@@ -2,6 +2,8 @@ using ElevenFiftyFlights.Models.User;
 using ElevenFiftyFlights.Data.Entities;
 using ElevenFiftyFlights.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace ElevenFiftyFlights.Services.User;
 
@@ -9,10 +11,9 @@ public class UserService : IUserService
 {
     private readonly ApplicationDbContext _context;
     private readonly int _userId;
-    public UserService(ApplicationDbContext context, int userId)
+    public UserService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
-        _userId = userId;
     }
 
     public async Task<bool> RegisterUserAsync(UserRegister model)
@@ -39,16 +40,16 @@ public class UserService : IUserService
 
     public async Task<bool> DeleteUserIdAsync(int UserId)
     {
-        var validUserId = await _context.UserId.FindAsync(UserId);
-        if (validUserId?.UserId != _userId)
+        var validUserId = await _context.Users.FindAsync(UserId);
+        if (validUserId?.Id != UserId)
             return false;
     
-        _context.UserId.Remove(validUserId);
+        _context.Users.Remove(validUserId);
                 return await _context.SaveChangesAsync() == 1;
     }
-    public async Task<UserIdEntity?> GetUserIdAsync(int UserId)
+    public async Task<UserEntity?> GetUserIdAsync(int UserId)
     {
-      return await _context.UserId.FirstOrDefaultAsync(user => user.UserId == UserId);
+      return await _context.Users.FirstOrDefaultAsync(user => user.Id == UserId);
     
     }
 } 

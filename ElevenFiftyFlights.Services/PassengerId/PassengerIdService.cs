@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using ElevenFiftyFlights.Data;
 using ElevenFiftyFlights.Data.Entities;
 using ElevenFiftyFlights.Models.PassengerId;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElevenFiftyFlights.Services.PassengerId;
@@ -13,10 +15,14 @@ public class PassengerIdService : IPassengerIdService
     private readonly ApplicationDbContext _dbContext;
 
     // constructor
-    public PassengerIdService(ApplicationDbContext dbContext/*, PassengerIdBooking booking*/)
+    public PassengerIdService(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
     {
         _dbContext = dbContext;
-        // _passengerIdResponse = booking;
+        var userClaims = httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+        var value = userClaims?.FindFirst("Id")?.Value;
+        var validId = int.TryParse(value, out _userId);
+        if (!validId)
+           throw new Exception("Attempted to build AirlineService without User Id claim.");
     }
 
     // type one
@@ -109,7 +115,7 @@ public class PassengerIdService : IPassengerIdService
         return numberOfChanges == 1;
     }
 
-//helper method stays local
+    //helper method stays local
     private string GenerateConfirmationCode(PassengerIdEntity passId)
     {
         Random random = new();
